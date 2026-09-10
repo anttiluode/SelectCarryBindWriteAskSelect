@@ -1,6 +1,6 @@
 # SelectCarryBindWriteAskSelect
 
-**Almost there. Now it is one machine.**
+**Almost there. Now it is one machine — and WRITE is physical.**
 
 This repo composes the mechanisms that kept reappearing across `SighImageSuper`, `InformationFlow`, `-mp-ri`, the Geometric Neuron / active-observer line, and the older phase-space experiments into one executable classical wave system:
 
@@ -8,11 +8,13 @@ This repo composes the mechanisms that kept reappearing across `SighImageSuper`,
 SELECT -> CARRY -> BIND -> WRITE -> ASK -> SELECT -> ...
 ```
 
-It is **not a quantum computer** and it is **not a claim that Navier–Stokes spontaneously learns**. The useful question is narrower:
+It is **not a quantum computer**. It is also no longer true that the default machine simply stipulates the slow write with `Re(z_j z_i*) -> Theta`.
 
-> Can a bounded machine keep information in coherent modal state, make only addressed pairs interact, let those interactions rewrite the operator, and then have the changed operator select and route future state differently?
+The current default asks the stronger question:
 
-The current answer in this engineered model is **yes**.
+> Can carrier-addressed activity generate a collision-specific low-frequency write through an actual nonlinear incompressible Navier–Stokes evolution, and can that physical write be inserted into the same organism without redesigning SELECT, CARRY, ASK, recall, or mode selection?
+
+For the present numerical construction, the answer is **yes**.
 
 ## The machine
 
@@ -25,10 +27,10 @@ a(t) = (a_1, ..., a_N) \in \mathbb{C}^N
 with physical basis functions
 
 ```math
-\phi_i(x)=G(x-q_i) e^{i k_i x}.
+\phi_i(x)=G(x-q_i)e^{ik_i x}.
 ```
 
-Each mode therefore carries an address
+Each mode therefore carries an address:
 
 ```text
 q      WHERE in space
@@ -37,119 +39,177 @@ omega  WHICH temporal carrier
 phi    SIGN / phase relation when binding
 ```
 
-The fast state evolves under a slow self-written operator
+The modal state evolves under a slow operator
 
 ```math
-\dot a = \left[\operatorname{diag}(-d_i+i\omega_i)+g\Theta\right]a + u(t).
+\dot a = [\operatorname{diag}(-d_i+i\omega_i)+g\Theta]a+u(t).
 ```
 
-`Theta` is the persistent body. Erasing `a` does not erase `Theta`.
+`Theta` is the finite operator coordinate used by the assembled organism. Erasing `a` does not erase the physical write that was read into `Theta`.
 
-### SELECT — Sigh-style mode survival
+## SELECT — Sigh-style mode survival
 
 Different modes have different decay rates. Repeated dynamics therefore select the longest-lived directions:
 
 ```math
-a(t)=\sum_j c_j e^{\lambda_j t} v_j.
+a(t)=\sum_j c_j e^{\lambda_j t}v_j.
 ```
 
-The default broadband receipt contracts modal effective dimension from **3.011 -> 1.898** before learning.
+The seeded broadband receipt contracts modal effective dimension from **3.011 -> 1.898** before learning.
 
-This is the piece inherited from `SighImageSuper`: **the operator assigns forgetting times**.
+This is the Sigh piece: **the operator assigns forgetting times**.
 
-### CARRY — coherent classical wave state
+## CARRY — coherent carrier state
 
-Modes rotate at their carrier frequency while retaining complex amplitude and phase. The machine does not reduce an event immediately to a Boolean bit. The carrier state itself is the transient memory and transport variable.
+Modes rotate at their carrier frequency while retaining complex amplitude and phase. Information is not reduced immediately to a Boolean symbol. The coherent carrier is transient state and address at once.
 
-### BIND — addressed quadratic interaction
+## BIND — let the nonlinear medium decide what survives
 
-For two simultaneously driven channels, the slow coincidence detector receives
+The previous implementation explicitly low-passed
 
 ```math
-z_j z_i^*.
+z_jz_i^*
 ```
 
-Its low-pass accumulator is
+and then wrote its real part into `Theta`. That version still exists as `--writer coherence` because it is a useful architectural control.
+
+The **default** backend now removes that write arrow.
+
+For each candidate A/B event, the program advances four exact-parity 2-D incompressible Navier–Stokes worlds:
+
+```text
+W0   no carrier forcing
+WA   A only
+WB   B only
+WAB  A + B
+```
+
+The carriers enter as localized oscillatory vorticity forcing. The equation itself supplies the quadratic interaction:
 
 ```math
-r_{ji} \leftarrow \beta r_{ji}+(1-\beta)z_j z_i^*.
+\partial_t\omega + u\cdot\nabla\omega = \nu\Delta\omega + f,
+\qquad \nabla\cdot u=0.
 ```
 
-Three selectors fall out:
-
-```text
-spatial envelope overlap  -> WHERE can bind
-Delta omega               -> WHICH pair survives time averaging
-Delta phase               -> SIGN of the real write channel
-```
-
-Thus equal-frequency phase relations give the expected pattern:
-
-```text
-Delta phi = 0       positive write
-Delta phi = pi/2    ~zero real write
-Delta phi = pi      negative write
-```
-
-### WRITE — experience becomes operator
-
-The retained coherent product writes the persistent route:
+After training, all forcing is removed and the fluid is allowed to relax. Only then do we form the collision-specific slow residual
 
 ```math
-\Theta_{ji}\leftarrow\Theta_{ji}+\eta\,O_{ji}\,\Re(r_{ji}),
+\boxed{
+\Delta\Omega_{AB}
+=P_{\rm slow}[\omega_{AB}-\omega_A-\omega_B+\omega_0]
+}
 ```
 
-where `O_ji` is the measured spatial overlap between the two localized carrier envelopes.
+This subtraction removes individual A and B writes and equal-time background evolution. It is the fluid version of asking for the interaction term rather than merely noticing that the final state changed.
 
-For the main demonstration the route is written symmetrically, so learning does something stronger than add a lookup-table edge: it changes the **eigensystem and persistence hierarchy** of the fast dynamics.
+## WRITE — Navier–Stokes backreaction becomes operator
 
-Before learning the dominant real eigenvalue is
+The distributed slow fluid field has many degrees of freedom while the assembled modal organism expects a finite A->B route coordinate. A one-time matched phase-0 run therefore defines the **orientation and units of that port**.
+
+Every other condition is projected onto the exact same physical template:
+
+```math
+c=\frac{\langle\Delta\Omega_{\rm ref},\Delta\Omega\rangle}
+        {\langle\Delta\Omega_{\rm ref},\Delta\Omega_{\rm ref}\rangle}.
+```
+
+Then `c` is converted into the existing modal coupling units. This projection is an engineered transducer, but it does **not** supply carrier selectivity or sign: those have to exist in the Navier–Stokes residual before projection.
+
+The deterministic 24×24 physical receipt gives:
+
+| training condition | projection on matched physical port | installed A->B route |
+| --- | ---: | ---: |
+| matched, phase 0 | `+1.000000` | **`+0.180000`** |
+| phase pi/2 | `+0.038213` | `+0.006878` |
+| phase pi | **`-1.004178`** | **`-0.180000`** |
+| frequency mismatch | `-0.003462` | `-0.000623` |
+| spatial separation | `+0.014735` | `+0.002652` |
+
+The raw low-frequency collision field is also selective: matched slow-field norm is **112.7×** the frequency-mismatch control and **32.5×** the spatial-separation control.
+
+After 700 forcing-free washout steps, the matched collision residual has
 
 ```text
--0.1400   lifetime ~7.14
+||fast residual|| / ||slow residual|| = 0.0895
 ```
 
-After matched A+B binding it becomes
+so the measured write is no longer dominated by the high-frequency carrier residue.
+
+The phase result is particularly useful. With the same locations, amplitudes and carrier frequency, `pi` reverses the physical low-frequency write while `pi/2` nearly suppresses the matched port. The sign is no longer inserted by `cos(Delta phi)` in the plasticity rule; it emerges in the nonlinear fluid residual.
+
+## WRITE changes SELECT
+
+The rest of the organism is unchanged.
+
+Before installing the matched physical write:
 
 ```text
--0.06752  lifetime ~14.81
+spectral abscissa  -0.140000
+longest lifetime    7.142857
 ```
 
-A new coupled A/B mode has become the longest-lived direction. This is the direct Sigh -> InformationFlow bridge:
+After the Navier–Stokes-derived A/B route:
 
-> **binding changes structure; structure changes which modes survive.**
+```text
+spectral abscissa  -0.0675171
+longest lifetime   14.8111
+```
 
-### ASK — bounded active readout
+The selected effective dimension after the same broadband challenge changes from `1.89784` to `1.39667`.
+
+So the physical collision does more than produce a stored scalar:
+
+> **the fluid changes the operator, and the changed operator changes which future modes persist.**
+
+## ASK — bounded active readout
 
 The observer is not handed the full state vector. It can query only local probes and has a finite question budget.
 
-After a complete fast-state wipe, an untrained world needs both available questions and still makes no decision. The matched learned world answers `B` with the **first** local question.
-
-The observer is deliberately tiny. Its purpose is to keep the interface honest so a stronger active-sensing policy can later replace it without changing the substrate.
-
-### SELECT again
-
-The loop closes because the write changed the generator itself. New broadband state is filtered by a different persistence spectrum than the one that existed before experience.
-
-That is the machine:
+In the CI smoke receipt, after a complete modal fast-state wipe and 100 recall steps:
 
 ```text
-                  +---------------------------+
-                  |        slow Theta         |
-                  |  persistent operator/body |
-                  +-------------^-------------+
-                                |
-                             WRITE
-                                |
-world -> SELECT -> CARRY -> BIND+-----> ASK -> action/question
-          ^                     |                |
-          |                     +----------------+
-          +------ changed operator / history ----+
+matched physical write       peak B power  1.9726e-2
+frequency mismatch                         2.3393e-7
+spatial separation                         4.2371e-6
+blank                                      0
+```
+
+The blank machine asks `B`, then `C`, and still makes no decision. The matched machine asks `B` once and decides `B`.
+
+The association is therefore being reused by the same bounded observer after the transient modal state has been erased.
+
+## SELECT again
+
+The loop is now:
+
+```text
+coherent addressed carriers
+        |
+        v
+actual nonlinear fluid collision
+        |
+        v
+collision-specific slow field
+        |
+        v
+fixed operator-port transducer
+        |
+        v
+changed Theta / changed eigensystem
+        |
+        v
+bounded ASK and new SELECT
+```
+
+Or compactly:
+
+```text
+SELECT -> CARRY -> BIND(NS) -> WRITE(NS slow residual) -> ASK -> SELECT
 ```
 
 ## Browser phase-space machine
 
-`index.html` is a dependency-free interactive version intended for GitHub Pages. It keeps the old Slider2 visual intuition but makes the plotted slow coordinate causal:
+`index.html` is the dependency-free Pages visualizer. Its causal axes remain
 
 ```text
 X = Re(a_A)
@@ -157,89 +217,70 @@ Y = Im(a_A)
 Z = Theta_BA
 ```
 
-Use the buttons to inject broadband state, write with phase `0`, `pi/2`, or `pi`, attack the write with a frequency mismatch, wipe all fast activity, and recall cue A. The browser model is deliberately lower-dimensional than the Python receipt, but the same loop is visible rather than hidden behind the plot.
+so the plotted slow coordinate changes later trajectories rather than merely decorating them.
 
-## Main receipt
-
-The deterministic default experiment runs six matched-time worlds.
-
-| world | learned A->B route |
-| --- | ---: |
-| matched, phase 0 | **+0.180000** |
-| phase pi/2 | `2.9e-17` |
-| phase pi | **-0.180000** |
-| frequency mismatch | `-0.000626` |
-| spatial separation | `+0.016845` |
-| blank | `0` |
-
-Absolute route selectivity is about **288x** over the frequency-mismatch control and **10.7x** over the spatial-separation control.
-
-After all transient state is erased, cue A alone produces peak B-mode power
-
-```text
-matched write       4.63e-2
-frequency mismatch  2.01e-8
-spatial separation  3.91e-4
-blank                0
-```
-
-The matched world therefore retains a functional A->B route in the slow operator, not in leftover fast activity.
-
-See [`RESULTS.md`](RESULTS.md) and [`results/machine.json`](results/machine.json).
+Important distinction: the browser intentionally uses the reduced modal surrogate for interactive speed. The **Python default** is the Navier–Stokes physical WRITE backend. The browser is a view of the assembled causal loop, not a CFD implementation.
 
 ## Run
 
 ```bash
 python -m pip install -e .[dev]
+
+# default: physical Navier-Stokes WRITE
 scbwas-machine --out results/latest.json
+
+# old explicit coherence writer, retained as a control
+scbwas-machine --writer coherence --out results/coherence_reference.json
+
 pytest -q
 ```
 
 Only NumPy is required by the machine itself.
 
+See [`RESULTS.md`](RESULTS.md), [`THEORY.md`](THEORY.md), and [`results/physical_write.json`](results/physical_write.json).
+
 ## What this is assembled from
 
-The implementation is new code, but the mechanisms are deliberately the smallest surviving pieces of the earlier repo line:
+- **SighImageSuper** — structure assigns mode lifetimes; changed material changes later recoverability.
+- **InformationFlow** — space/frequency/phase can address a quadratic write rather than letting every interaction count.
+- **-mp-ri / Gemini Gate 6** — use equal-time counterfactual worlds and isolate `AB-A-B+0`; its failed unaddressed synapse motivated carrier addressing.
+- **GeometricNeuron / active observer** — a distinction can physically exist while remaining invisible to the wrong bounded query.
+- **Child / Jello / delayed-credit line** — state, structure, question and consequence should not be collapsed into one variable.
+- **Slider2** — phase space becomes computational once plotted slow coordinates feed back into the next dynamics.
 
-- **SighImageSuper** — operator iteration selects modes by persistence; memory is not restricted to lingering activity; changed material can alter later query geometry.
-- **InformationFlow** — carrier/phase/frequency addressed quadratic products can write a persistent routing field by construction.
-- **-mp-ri** — fast flow / slow body separation; later routing depends on persistent field objects.
-- **GeometricNeuron / active observer** — a distinction can exist while remaining invisible to the wrong bounded query.
-- **Child / Jello / delayed-credit line** — present state, stored structure, and the act of asking should not be collapsed into one variable.
-- **Slider2 / old phase-space UI** — phase space is useful once the plotted coordinates are causal state variables rather than decoration.
+## What changed in this revision
 
-## Why this is not just another gate
+The old full loop was already executable, but WRITE was the conspicuous hand-supplied step:
 
-There are controls, because without them every wave toy lies to us. But the repo is organized around **one reusable machine class**, not a ladder of unrelated gates.
-
-`ModalFieldComputer` exposes the full loop:
-
-```python
-machine.inject(...)
-machine.step(...)
-machine.write_from_pair(...)
-machine.ask(...)
-machine.select_from_broadband(...)
-machine.reset_fast(...)
+```text
+low-pass coherence -> explicit plasticity rule -> Theta
 ```
 
-The next work should happen *inside this object*: replace the explicit structural write with progressively more physical substrates, feed it real Splat/Gabor sensory packets, or attach the old Slider2 audio loop as a hardware carrier source.
+The default path is now:
+
+```text
+carrier forcing
+    -> Navier-Stokes u.grad(omega)
+    -> four-world collision residual
+    -> forcing-free washout
+    -> slow physical field
+    -> fixed port readout
+    -> Theta
+```
+
+So the organism did not need redesigning. We replaced the substrate under one interface.
 
 ## Claim boundary
 
-The positive result is real for this implementation but partly **by construction**.
+This is stronger than the previous version, but the boundary still matters.
 
-We explicitly chose:
+The code now establishes, for this numerical construction, that:
 
-- the carrier basis;
-- the low-pass coherence detector;
-- the structural coupling rule;
-- the bounded probe policy.
+1. a carrier-matched collision creates a reproducible low-frequency Navier–Stokes residual;
+2. frequency mismatch and spatial separation strongly suppress that physical residual;
+3. relative phase reverses its projection on a fixed learned/calibrated port;
+4. that physical write can alter the same modal operator, persistence hierarchy, recall path and bounded ASK behavior used by the assembled machine.
 
-So this repo does **not** establish a new fundamental law, quantum advantage, a solution to general continual learning, or spontaneous learning in bare Navier–Stokes.
+It does **not** establish that bare Navier–Stokes discovers useful semantic ports, chooses rewards, provides a general learning algorithm, or beats digital neural networks. The reference-port projection and finite modal interface remain engineered.
 
-What it establishes is an executable architectural identity:
-
-> **selective coherent interaction can write a slow operator, and the written operator can change both later routing and the modal hierarchy that selects what persists.**
-
-That is enough to build on.
+But the explicit plasticity arrow is no longer doing the interesting selection.

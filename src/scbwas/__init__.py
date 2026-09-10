@@ -9,6 +9,13 @@ from .core import (
     effective_dimension,
     with_mode,
 )
+from .fluid_backreaction import (
+    CollisionField,
+    FluidBackreactionWriter,
+    FluidConfig,
+    NavierStokes2D,
+    PhysicalWriteReceipt,
+)
 
 __all__ = [
     "AskResult",
@@ -18,4 +25,9 @@ __all__ = [
     "default_modes",
     "effective_dimension",
     "with_mode",
+    "FluidConfig",
+    "CollisionField",
+    "PhysicalWriteReceipt",
+    "NavierStokes2D",
+    "FluidBackreactionWriter",
 ]
