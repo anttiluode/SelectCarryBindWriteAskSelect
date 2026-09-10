@@ -1,0 +1,65 @@
+{
+  "status": "assembled_machine",
+  "claim_boundary": "This is an engineered classical modal-flow computer. It composes modal selection, coherent carrier transport, quadratic binding, slow structural writing, bounded active readout, and re-selection. The write law is explicit; this does not establish quantum advantage or spontaneous Navier-Stokes learning.",
+  "config": {
+    "n_space": 256,
+    "training_cycles": 28,
+    "recall_steps": 190
+  },
+  "select_before": {
+    "before_effective_dimension": 3.0108215968583423,
+    "after_effective_dimension": 1.8978427229157382,
+    "after_power": [0.12905846407578536, 0.07432098695983347, 0.45268752487599884, 0.0004475051762340316]
+  },
+  "spectrum_before": {
+    "spectral_abscissa": -0.14,
+    "eigenvalues": [
+      {"real": -0.14, "imag": 7.0},
+      {"real": -0.22, "imag": 4.0},
+      {"real": -0.28, "imag": 4.0},
+      {"real": -0.42, "imag": 9.5}
+    ],
+    "lifetimes": [7.142857142857142, 4.545454545454546, 3.571428571428571, 2.380952380952381]
+  },
+  "training": {
+    "blank": {"mean_write_drive": 0.0, "final_route_A_to_B": 0.0, "structure_l2": 0.0},
+    "matched_phase_0": {"mean_write_drive": 0.1862302293814577, "final_route_A_to_B": 0.18, "final_route_B_to_A": 0.18, "structure_l2": 0.2545584412271571},
+    "phase_pi_over_2": {"mean_write_drive": 8.596009276579742e-18, "final_route_A_to_B": 2.9161615336277255e-17, "final_route_B_to_A": 2.9161615336277255e-17, "structure_l2": 4.124075190927054e-17},
+    "phase_pi": {"mean_write_drive": -0.1862302293814577, "final_route_A_to_B": -0.18, "final_route_B_to_A": -0.18, "structure_l2": 0.2545584412271571},
+    "frequency_mismatch": {"mean_write_drive": -0.0001619130937884596, "final_route_A_to_B": -0.000625580665703657, "final_route_B_to_A": -0.000625580665703657, "structure_l2": 0.000884704661796501},
+    "spatial_separation": {"mean_write_drive": 0.004966567014087182, "final_route_A_to_B": 0.016844735857547477, "final_route_B_to_A": 0.016844735857547477, "structure_l2": 0.02382205390433603}
+  },
+  "spectrum_after": {
+    "spectral_abscissa": -0.06751712409105344,
+    "eigenvalues": [
+      {"real": -0.06751712409105344, "imag": 4.000000000000003},
+      {"real": -0.14, "imag": 7.0},
+      {"real": -0.42, "imag": 9.5},
+      {"real": -0.43248287590894663, "imag": 4.000000000000001}
+    ],
+    "lifetimes": [14.811057394141999, 7.142857142857142, 2.380952380952381, 2.31223027709087]
+  },
+  "select_after": {
+    "before_effective_dimension": 3.0108215968583423,
+    "after_effective_dimension": 1.3966657547875092,
+    "after_power": [0.04471805445395635, 0.04202980504863496, 0.45268752487599884, 0.0004475051762340316]
+  },
+  "recall_after_fast_wipe": {
+    "blank": {"peak_B_mode_power": 0.0, "peak_C_mode_power": 0.0, "ask": {"chosen": ["B", "C"], "values": [0.14479413996091842, 4.1478315333151235e-07], "decision": null, "cost": 2}},
+    "matched_phase_0": {"peak_B_mode_power": 0.04633971090298303, "peak_C_mode_power": 0.0, "ask": {"chosen": ["B"], "values": [0.3008814682561038], "decision": "B", "cost": 1}},
+    "phase_pi_over_2": {"peak_B_mode_power": 1.1705937380979294e-33, "peak_C_mode_power": 0.0, "ask": {"chosen": ["B", "C"], "values": [0.14479413996091842, 4.147831533315127e-07], "decision": null, "cost": 2}},
+    "phase_pi": {"peak_B_mode_power": 0.04633971090298303, "peak_C_mode_power": 0.0, "ask": {"chosen": ["B", "C"], "values": [0.08486541337364342, 5.856130864922802e-06], "decision": null, "cost": 2}},
+    "frequency_mismatch": {"peak_B_mode_power": 2.0123993739242532e-08, "peak_C_mode_power": 0.0, "ask": {"chosen": ["B", "C"], "values": [0.1447842635630691, 4.1456745525765796e-07], "decision": null, "cost": 2}},
+    "spatial_separation": {"peak_B_mode_power": 0.0003907127670735529, "peak_C_mode_power": 0.0, "ask": {"chosen": ["B", "C"], "values": [0.0008346415590574661, 6.371533774900296e-05], "decision": null, "cost": 2}}
+  },
+  "metrics": {
+    "matched_route": 0.18,
+    "phase_quadrature_route": 2.9161615336277255e-17,
+    "antiphase_route": -0.18,
+    "frequency_mismatch_route": -0.000625580665703657,
+    "spatial_separation_route": 0.016844735857547477,
+    "matched_over_frequency_abs": 287.7326771437257,
+    "matched_over_spatial_abs": 10.685830962951142,
+    "matched_recall_B_peak": 0.04633971090298303
+  }
+}
