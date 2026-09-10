@@ -1,4 +1,4 @@
-"""SelectCarryBindWriteAskSelect: a self-modifying classical modal-flow machine."""
+"""SelectCarryBindWriteAskSelect: a self-modifying classical wave-flow machine."""
 
 from .core import (
     AskResult,
@@ -9,6 +9,7 @@ from .core import (
     effective_dimension,
     with_mode,
 )
+from .direct_fluid import DirectFluidOperator, DirectRecallReceipt, run_direct_fluid_machine
 from .fluid_backreaction import (
     CollisionField,
     FluidBackreactionWriter,
@@ -30,4 +31,7 @@ __all__ = [
     "PhysicalWriteReceipt",
     "NavierStokes2D",
     "FluidBackreactionWriter",
+    "DirectRecallReceipt",
+    "DirectFluidOperator",
+    "run_direct_fluid_machine",
 ]

@@ -1,127 +1,112 @@
 # Results
 
-Default result: **Navier–Stokes collision backreaction supplies WRITE**.
+Default result: **the learned slow Navier–Stokes field itself routes the later cue**.
 
-The values below are from the deterministic 24×24 fluid backend used by CI. The modal smoke receipt uses `n_space=128` and 100 recall steps; the same physical writer is the CLI default.
+The previous revision still projected the distributed fluid write onto a finite modal `Theta_AB` port. The default path no longer does that.
 
-See [`results/physical_write.json`](results/physical_write.json).
+## Physical WRITE
 
-## 1. SELECT before learning
-
-A seeded broadband modal state begins with participation ratio
-
-```text
-3.010822
-```
-
-and contracts under autonomous dynamics to
-
-```text
-1.897843
-```
-
-after 800 steps. This is ordinary dissipative mode selection.
-
-## 2. Physical BIND / WRITE
-
-The default WRITE backend advances four exact-parity 2-D incompressible Navier–Stokes worlds and measures
+The stored field is
 
 ```math
-DeltaOmega_AB = P_slow[omega_AB - omega_A - omega_B + omega_0].
+\Delta\Omega_{AB}
+=P_{\rm slow}[\omega_{AB}-\omega_A-\omega_B+\omega_0]
 ```
 
-A matched phase-0 collision is used once to define the positive orientation and units of the A->B operator port. Every control is projected onto that same fixed physical field.
+after 210 driven steps and 700 forcing-free washout steps.
 
-| condition | physical-port projection | installed route | slow collision norm |
-| --- | ---: | ---: | ---: |
-| matched phase 0 | `+1.000000` | `+0.180000` | `1.75699e-2` |
-| phase pi/2 | `+0.038213` | `+0.006878` | `2.42715e-3` |
-| phase pi | `-1.004178` | `-0.180000` | `1.77728e-2` |
-| frequency mismatch | `-0.003462` | `-0.000623` | `1.55921e-4` |
-| spatial separation | `+0.014735` | `+0.002652` | `5.40720e-4` |
+Default 24x24 collision fields:
 
-Raw slow-field selectivity:
-
-```text
-matched / frequency mismatch   112.68x
-matched / spatial separation    32.49x
-```
-
-After 700 forcing-free steps, the matched collision residue has
-
-```text
-||fast|| / ||slow|| = 0.089514
-```
-
-so the retained signal used for WRITE is not dominated by the original high-frequency carrier activity.
-
-The phase result is now a property of the fluid residual rather than an explicit `cos(Delta phi)` plasticity term: antiphase reverses the matched physical field projection, while quadrature leaves only a small residual on that port.
-
-## 3. WRITE changes SELECT
-
-Before installing the physical route:
-
-```text
-spectral abscissa  -0.140000
-lifetime            7.142857
-```
-
-After the matched fluid write:
-
-```text
-spectral abscissa  -0.0675171
-lifetime           14.811057
-```
-
-The same seeded broadband challenge contracts to effective dimension
-
-```text
-before physical write   1.897843
-after physical write    1.396666
-```
-
-Thus the physically generated write changes the hierarchy of persistence used by later SELECT.
-
-## 4. Fast wipe then recall
-
-All fast **modal** amplitudes and coherence traces are erased before recall. The fluid-derived slow route remains in the operator interface.
-
-At 100 recall steps:
-
-| condition | peak B-mode power |
+| condition | slow collision norm |
 | --- | ---: |
-| matched physical write | `1.97262e-2` |
-| spatial-separation write | `4.23707e-6` |
-| frequency-mismatch write | `2.33934e-7` |
+| matched phase 0 | `1.75699e-2` |
+| phase pi/2 | `2.42715e-3` |
+| phase pi | `1.77728e-2` |
+| frequency mismatch | `1.55921e-4` |
+| spatial separation | `5.40720e-4` |
+
+The matched field is about `112.7x` the frequency-mismatch field and `32.5x` the spatial-separation field by slow-field norm.
+
+After washout:
+
+```text
+matched ||fast|| / ||slow|| = 0.089514
+```
+
+so the retained write is predominantly low-frequency rather than leftover carrier state.
+
+## Direct physical RECALL
+
+The memory is not converted into a matrix. It is copied directly into the initial vorticity field of the recall world with
+
+```text
+memory_gain = 1.0
+```
+
+A later cue A is injected once. The physical memory-specific cue response is isolated with
+
+```math
+\chi_A(t)
+=\omega_{\Delta\Omega+A}(t)
+-\omega_{\Delta\Omega}(t)
+-\omega_A(t).
+```
+
+A local Gaussian detector at B measures the signed projection of this field. With 250 recall steps:
+
+| stored field | signed peak at B |
+| --- | ---: |
+| matched phase 0 | **`-6.31486e-4`** |
+| phase pi/2 | `-2.59460e-5` |
+| phase pi | **`+5.90061e-4`** |
+| frequency mismatch | `+6.33743e-7` |
+| spatial separation | `-1.24081e-5` |
 | blank | `0` |
 
-So the functional consequence survives the transient modal-state wipe.
-
-## 5. ASK
-
-With the same two-question budget:
+Absolute selectivity:
 
 ```text
-blank     asks B, then C, no decision      cost 2
-matched   asks B, decides B                cost 1
+matched / quadrature         ~24.34x
+matched / frequency mismatch ~996.4x
+matched / spatial separation ~50.9x
 ```
 
-The surrounding observer was not redesigned when WRITE changed substrate.
+Antiphase reverses the sign of the later B response while preserving a comparable magnitude.
 
-## 6. What is calibrated vs what is measured
+The matched response at B is also about `45.5x` larger than the matched response at a distant distractor detector.
 
-The matched phase-0 field defines the finite-dimensional port basis. Consequently its own projection is `1` by definition and its route scale is a chosen unit conversion (`0.18`).
+## Bounded ASK
 
-What is **not** defined by that calibration is the behavior of the controls. Frequency mismatch, spatial separation, quadrature and antiphase are run through the same fluid solver and the same fixed projection. Their suppression/sign is therefore an empirical property of this numerical physical substrate.
+With a fixed local threshold of `1e-4`:
 
-The stronger future version would eliminate even the fixed port projection by letting the distributed slow fluid field directly route the fast wave state.
+```text
+matched phase 0      B decisive, cost 1
+phase pi             B decisive with opposite polarity, cost 1
+frequency mismatch   no B decision, cost 2
+spatial separation   no B decision, cost 2
+blank                no B decision, cost 2
+```
 
-## 7. CI status
+ASK therefore operates directly on the changed fluid trajectory; it no longer reads a consequence mediated by `Theta`.
 
-The PR introducing the physical backend runs **7 tests successfully** on Python 3.10 and 3.12, then runs the full physical-write smoke receipt. The Python 3.12 job reports `7 passed in 9.61s`; the end-to-end physical machine also completed successfully.
+## What this establishes
 
-## Claim boundary
+For this deterministic numerical construction:
 
-This is now more than the previous engineered coherence rule, but it remains a hybrid machine.
+1. addressed carrier co-occurrence leaves a collision-specific slow fluid field;
+2. the stored field survives after the training carriers have substantially washed out;
+3. the raw field itself changes the nonlinear evolution of a later cue;
+4. the change is locally detectable at B and is strongly suppressed by frequency mismatch, spatial separation and quadrature;
+5. antiphase reverses the sign of the later local response.
 
-Navier–Stokes supplies the collision-specific distributed slow write. The mapping from that distributed field into the finite modal A->B port is still an engineered, once-calibrated transducer. The system does not yet discover useful ports or semantic goals autonomously.
+## What remains engineered
+
+The carrier geometry, spectral split, detector locations, cue amplitude, and task meaning of A/B remain chosen by us. The four-world inclusion/exclusion construction is also an experimental isolation device rather than an autonomous biological learning controller.
+
+The current result therefore does **not** establish spontaneous semantics, general continual learning, hardware advantage, or a superior AI architecture.
+
+What changed is narrower but important:
+
+> **the demonstrated recall effect no longer requires a finite-dimensional transducer between the learned fluid field and the next computation.**
+
+The medium writes itself, and the next wave propagates in that changed medium.

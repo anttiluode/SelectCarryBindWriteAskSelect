@@ -1,28 +1,25 @@
-# Theory note: modal flow with a physical write substrate
+# Theory note: when the written field is the operator
 
-The useful object in this repo is not a quantum analogy. It is a two-timescale operator system with wave-native addressing. The current default now separates the **modal organism** from the **physical write substrate**.
+The current default machine is not a quantum analogy and no longer needs a finite learned matrix between physical WRITE and later computation.
 
-## Fast modal state
+Its two relevant field states are
 
-For localized modes `phi_i(x)`,
-
-```math
-\psi(x,t)=\sum_i a_i(t)\phi_i(x),
+```text
+fast carrier activity     w(x,t)
+slow written vorticity    DeltaOmega(x,y)
 ```
 
-with
+and the key loop is
 
-```math
-\dot a=G(\Theta)a+u(t),
-\qquad
-G(\Theta)=\operatorname{diag}(-d_i+i\omega_i)+g\Theta.
+```text
+fast carriers interact
+      -> slow field remains
+      -> later fast carrier evolves in that changed field
 ```
-
-The real parts of the eigenvalues of `G` define forgetting/growth times. This is the Sigh side: structure assigns persistence.
 
 ## Carrier address
 
-A physical training channel is specified by several coordinates:
+A training channel carries several coordinates:
 
 ```text
 q          spatial center / WHERE
@@ -31,19 +28,17 @@ omega      temporal carrier / WHICH
 Delta phi  relative phase / signed interaction coordinate
 ```
 
-The old reduced writer made this transparent with
+A packet is schematically
 
 ```math
-z_jz_i^*=A_jA_i e^{i[(\omega_j-\omega_i)t+(\phi_j-\phi_i)]},
+f_i(x,t)=E_i(x;q_i)\cos(K_i\cdot x)\cos(\omega_i t+\phi_i).
 ```
 
-then explicitly low-passed the product. That model is retained as `--writer coherence`.
+This is the Wavebits/InformationFlow clue: coherent carrier relations can make selected products add while mismatched products oscillate or fail to overlap.
 
-The default path now asks whether a nonlinear field can implement the same selection physically.
+## BIND
 
-## Navier–Stokes BIND
-
-The write substrate is a periodic 2-D incompressible vorticity field:
+The medium is periodic 2-D incompressible Navier-Stokes in vorticity form:
 
 ```math
 \partial_t\omega+u\cdot\nabla\omega
@@ -52,148 +47,161 @@ The write substrate is a periodic 2-D incompressible vorticity field:
 
 ```math
 u=(\partial_y\psi,-\partial_x\psi),
-\qquad
--\Delta\psi=\omega.
+\qquad -\Delta\psi=\omega.
 ```
 
-Carrier A and carrier B enter as localized, oscillatory, high-spatial-frequency forcing packets. The solver does not receive a coherence product. The only nonlinear mixer is the convective term `u.grad(omega)`.
+No explicit `z_j z_i*` product is given to the solver. The quadratic mixer is the convective term itself.
 
-The forcing has the schematic form
+Frequency mismatch changes temporal cancellation, spatial separation suppresses local cross-terms, and relative phase changes the sign of the coherent collision pattern.
 
-```math
-f_i(x,t)=E_i(x;q_i)\cos(K_i\cdot x)\cos(\omega_i t+\phi_i).
-```
+## WRITE: isolate the collision in state space
 
-Because the dynamics are quadratic, pair cross-terms can generate difference-frequency / difference-wavevector content. Frequency mismatch makes those contributions alternate in sign through time; spatial separation suppresses local cross-terms; relative phase can reverse the collision contribution.
-
-## Four-world isolation
-
-A changed final fluid is not sufficient evidence for binding. A alone and B alone can each alter the field, and every world diffuses with time.
-
-Therefore all worlds start identically and advance for exactly the same number of steps:
+A changed final fluid by itself proves little. A and B can each alter the field independently. Therefore four exact-parity worlds are advanced:
 
 ```text
-W0   background / no carriers
+W0   no carriers
 WA   A only
 WB   B only
-WAB  A + B
+WAB  A+B
 ```
 
-The pair-specific physical write is
+The pair-specific residual is
 
 ```math
-\Delta\Omega_{AB}
-=P_{\rm slow}
-[\omega_{AB}-\omega_A-\omega_B+\omega_0].
+\Delta\omega_{AB}
+=\omega_{AB}-\omega_A-\omega_B+\omega_0.
 ```
 
-This is an inclusion/exclusion interaction residual in the **state itself**, before a nonlinear detector is applied.
+After forcing is removed, every world receives the same long washout. Memory is defined as the slow part
 
-After the carriers are switched off, every world receives a forcing-free washout. The current deterministic setting leaves the matched collision with
+```math
+\boxed{
+\Delta\Omega_{AB}=P_{\rm slow}\Delta\omega_{AB}.
+}
+```
+
+This is a state-space inclusion/exclusion measurement, not a nonlinear detector applied after the fact.
+
+The default matched collision leaves
 
 ```text
-||fast residual|| / ||slow residual|| = 0.0895
+||fast residual|| / ||slow residual|| ~= 0.0895
 ```
 
-after washout, so the stored quantity used by the adapter is genuinely dominated by the low-frequency band.
+after washout, so the retained field is dominated by the slow band.
 
-## From distributed slow field to modal operator
+## No Theta transducer
 
-There is still an interface problem. `DeltaOmega_AB(x,y)` is a distributed physical state, while the assembled organism currently expects a finite route `Theta_BA`.
-
-The present solution is a fixed transducer.
-
-One matched phase-0 run defines a reference physical port `R_AB(x,y)`. Every subsequent collision field is measured by
-
-```math
-c_{AB}
-=\frac{\langle R_{AB},\Delta\Omega\rangle}
-       {\langle R_{AB},R_{AB}\rangle}.
-```
-
-The modal route is then expressed in chosen coupling units:
-
-```math
-\Theta_{BA}=s\,c_{AB}.
-```
-
-For the main symmetric demonstration the same value is installed in `Theta_AB` so the structural event changes the eigenspectrum rather than only creating a triangular feed-forward edge.
-
-This projection is **calibration**, not a second learning rule: the same fixed reference is used for phase, frequency and spatial controls. It chooses what finite physical deformation counts as the A<->B operator port, but it does not choose the sign or selectivity of each new collision.
-
-## The measured address structure
-
-With the current deterministic numerical substrate:
+The previous version performed
 
 ```text
-matched phase 0       projection  +1.0000
-phase pi/2                        +0.0382
-phase pi                          -1.0042
-frequency mismatch               -0.00346
-spatial separation               +0.01473
+DeltaOmega(x,y) -> fixed projection -> Theta_AB.
 ```
 
-and the raw matched slow-field norm is about `112.7x` the frequency-mismatch control and `32.5x` the spatial-separation control.
+The default machine now stops at `DeltaOmega`.
 
-This is the main new fact relative to the previous version: **the nonlinear fluid itself now supplies most of the selection that the explicit coherence rule used to impose.**
-
-## Why WRITE changes SELECT
-
-The A/B modal block is approximately
+At recall, a new fluid world is initialized with that distributed field itself:
 
 ```math
-\begin{pmatrix}
--d_A+i\omega & g\theta\\
-g\theta & -d_B+i\omega
-\end{pmatrix}.
+\omega(x,0)=\Delta\Omega_{AB}(x)+\omega_{cue}(x).
 ```
 
-A nonzero physical write splits the decay rates of the coupled combinations. In the default receipt the longest lifetime changes from about `7.14` to `14.81`.
-
-So the loop is now
+Two controls are evolved in parallel:
 
 ```text
-carrier event
-    -> nonlinear physical collision
-    -> slow distributed backreaction
-    -> fixed operator port
-    -> changed eigensystem
-    -> changed persistence hierarchy
-    -> changed future bounded observation
+memory only
+cue only in blank fluid
 ```
 
-## Bounded observation
+and the later memory-specific cue trajectory is
 
-A full state tomography would make ASK trivial. The organism instead exposes local probes and stops when one clears a threshold or the question budget is exhausted.
+```math
+\boxed{
+\chi_A(t)
+=\omega_{\Delta\Omega+A}(t)
+-\omega_{\Delta\Omega}(t)
+-\omega_A(t).
+}
+```
 
-The important architectural point is that ASK did not change when WRITE became physical. This is the benefit of treating the system as composable causal roles rather than one monolithic field metaphor.
+This subtraction removes static memory amplitude and direct cue propagation. `chi_A` therefore measures how the stored physical field changes the future evolution of the cue.
 
-## Relation to Wavebits
+There is no matched-template projection of `DeltaOmega`, and the stored field is used with gain exactly `1`.
 
-Wavebits supply the signal-processing clue that coherent carrier relations can make selected products survive temporal averaging while mismatched products cancel.
+## ASK
 
-This repo uses that clue differently. It does not reconstruct an exponentially large quantum state. It injects carrier-coded activity into a nonlinear classical medium and asks whether the resulting slow physical state can alter future information flow.
+A bounded local detector reads
+
+```math
+y_B(t)=\langle h_B,\chi_A(t)\rangle
+```
+
+with `h_B` a localized Gaussian patch.
+
+This is intentionally a small observation rather than full field tomography. The direct machine asks B first and only spends another question if B is not decisive.
+
+The detector is engineered, but it is not a WRITE transducer: it only observes what the new cue physically became after evolving in the stored field.
+
+## The measured address structure survives direct recall
+
+With the raw stored fields:
+
+```text
+matched phase 0       B signed peak  -6.315e-4
+phase pi/2                            -2.595e-5
+phase pi                              +5.901e-4
+frequency mismatch                    +6.34e-7
+spatial separation                    -1.24e-5
+blank                                  0
+```
+
+So direct later routing retains the same qualitative address structure:
+
+```text
+space       matters
+frequency   matters strongly
+phase       controls sign
+```
+
+Antiphase is especially informative: it does not merely change the amount of stored energy. It reverses the sign of the later local cue response.
+
+## SELECT
+
+The Sigh connection now appears physically as a hierarchy of survival times.
+
+Training injects high-frequency carrier structure, but the machine does not save that waveform. Dissipation removes the fast content and the low-frequency collision field remains. What survives the dynamics becomes the operator seen by the next cue.
+
+The older modal model in `core.py` still gives a clean eigensystem view of the same design principle:
+
+> structure determines which modes persist.
+
+The direct fluid path simply realizes the next step without first compressing the written structure into a finite matrix.
 
 ## Relation to the failed fluid-synapse Gate 6
 
-The earlier `-mp-ri/Claude/gate6_fluid_synapse.py` found substantial nonlinear low-frequency change but failed the functional isolation test: its separated control routed recall more strongly than the collision-specific term.
+The earlier Gate 6 in `-mp-ri` found nonlinear low-frequency change but failed functional isolation: the separated control could route recall more strongly than the alleged collision synapse.
 
-That failure suggested the missing variable was **addressing**, not more nonlinearity.
+The important correction was not “more nonlinearity.” It was **address the interaction**.
 
-The current substrate therefore keeps the four-world attacker but gives the packets coherent spatial/frequency/phase addresses before they enter the same kind of nonlinear fluid dynamics.
+The current machine keeps the four-world attacker but gives packets coherent spatial/frequency/phase addresses. The resulting matched memory is strongly larger than frequency and spatial controls, and—more importantly—the raw field itself selectively changes a later cue.
 
-## Remaining physical gap
+## What remains open
 
-The strongest next replacement is now very specific.
-
-Currently:
+The removed gap was
 
 ```text
-distributed Navier-Stokes slow field
-          -> fixed calibrated modal port
-          -> Theta
+physical write -> finite Theta -> later route.
 ```
 
-A more fully field-native machine would remove that transducer and let the slow physical field itself be the routing operator for the next fast carriers.
+That gap is gone for the demonstrated effect.
 
-That is a narrower and better problem than inventing another external learning rule.
+The remaining gaps are higher-level:
+
+- who chooses useful carrier addresses;
+- how consequence decides which physical writes should be retained;
+- how many memories can coexist before cross-talk dominates;
+- whether the slow field can support continual adaptation and reversal;
+- whether a hardware implementation offers any efficiency or robustness advantage;
+- whether the same substrate can be driven by real sensory packets rather than named A/B channels.
+
+Those are now questions about the machine's learning ecology, not about whether a written field can participate directly in the next computation.

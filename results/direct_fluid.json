@@ -1,0 +1,49 @@
+{
+  "status": "direct_fluid_operator",
+  "claim_boundary": "The collision-specific low-frequency Navier-Stokes field is used directly as the routing medium for the later cue. There is no projection onto, or installation into, a finite Theta operator. The local detector, carrier geometry and low/fast spectral split remain engineered.",
+  "config": {
+    "grid": 24,
+    "dt": 0.015,
+    "viscosity": 0.04,
+    "k_split": 3.0,
+    "carrier_k": 6.0,
+    "packet_sigma": 0.55,
+    "packet_amplitude": 8.0,
+    "train_steps": 210,
+    "washout_steps": 700,
+    "recall_steps": 250,
+    "cue_amplitude": 3.0,
+    "probe_sigma": 0.45,
+    "ask_threshold": 0.0001,
+    "memory_gain": 1.0
+  },
+  "memory": {
+    "matched_phase_0": {"slow_norm": 0.017569926156257503, "fast_over_slow_after_washout": 0.08951404205430344},
+    "phase_pi_over_2": {"slow_norm": 0.0024271529621977205, "fast_over_slow_after_washout": 0.17343825869100202},
+    "phase_pi": {"slow_norm": 0.01777277063930214, "fast_over_slow_after_washout": 0.09199716388799084},
+    "frequency_mismatch": {"slow_norm": 0.00015592140562331255, "fast_over_slow_after_washout": 0.1288325853134894},
+    "spatial_separation": {"slow_norm": 0.0005407203494676352, "fast_over_slow_after_washout": 0.15427442008407463}
+  },
+  "recall": {
+    "blank": {"target_signed_peak": 0.0, "target_peak_step": 0, "distractor_signed_peak": 0.0, "distractor_peak_step": 0, "target_over_distractor_abs": 0.0, "decision": null, "polarity": 0, "ask_cost": 2},
+    "matched_phase_0": {"target_signed_peak": -0.0006314856404271083, "target_peak_step": 78, "distractor_signed_peak": 0.000013864289200806955, "distractor_peak_step": 249, "target_over_distractor_abs": 45.54763906286705, "decision": "B", "polarity": -1, "ask_cost": 1},
+    "phase_pi_over_2": {"target_signed_peak": -0.000025946033689466363, "target_peak_step": 49, "distractor_signed_peak": 0.0000012484879568156033, "distractor_peak_step": 249, "target_over_distractor_abs": 20.781965518403897, "decision": null, "polarity": 0, "ask_cost": 2},
+    "phase_pi": {"target_signed_peak": 0.0005900613888313311, "target_peak_step": 75, "distractor_signed_peak": -0.00001399623931297394, "distractor_peak_step": 249, "target_over_distractor_abs": 42.15856671171732, "decision": "B", "polarity": 1, "ask_cost": 1},
+    "frequency_mismatch": {"target_signed_peak": 6.337429316166486e-7, "target_peak_step": 34, "distractor_signed_peak": -7.207192667591912e-8, "distractor_peak_step": 249, "target_over_distractor_abs": 8.793200793329087, "decision": null, "polarity": 0, "ask_cost": 2},
+    "spatial_separation": {"target_signed_peak": -0.000012408055500742181, "target_peak_step": 116, "distractor_signed_peak": 1.3967399974914398e-7, "distractor_peak_step": 249, "target_over_distractor_abs": 88.83582795789735, "decision": null, "polarity": 0, "ask_cost": 2}
+  },
+  "metrics": {
+    "matched_target_abs": 0.0006314856404271083,
+    "matched_target_signed": -0.0006314856404271083,
+    "quadrature_target_abs": 0.000025946033689466363,
+    "antiphase_target_signed": 0.0005900613888313311,
+    "frequency_target_abs": 6.337429316166486e-7,
+    "spatial_target_abs": 0.000012408055500742181,
+    "matched_over_quadrature_abs": 24.338426749948372,
+    "matched_over_frequency_abs": 996.4381580079793,
+    "matched_over_spatial_abs": 50.8931992074377,
+    "matched_target_over_distractor_abs": 45.54763906286705,
+    "matched_fast_over_slow_after_washout": 0.08951404205430344,
+    "antiphase_reverses_target_sign": true
+  }
+}
