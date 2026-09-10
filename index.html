@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Select → Carry → Bind → Write → Ask → Select</title>
+<style>
+  :root{color-scheme:dark;background:#090d14;color:#e7edf8;font-family:Inter,system-ui,Segoe UI,sans-serif}
+  *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 30% 0%,#13203a 0,#090d14 45%)}
+  main{max-width:1400px;margin:auto;padding:22px}.top{display:flex;gap:16px;align-items:end;justify-content:space-between;flex-wrap:wrap}
+  h1{margin:0;font-size:clamp(24px,4vw,42px)} .sub{color:#9cadc9;margin-top:6px}.badge{padding:7px 10px;border:1px solid #34517a;border-radius:999px;color:#a9c9ff}
+  .grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(310px,1fr);gap:14px;margin-top:18px}.card{background:#0d1420dd;border:1px solid #22324c;border-radius:14px;padding:14px;box-shadow:0 12px 35px #0007}
+  canvas{width:100%;height:auto;background:#05080d;border-radius:10px;border:1px solid #1b293d}.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}button{background:#17243a;color:#e9f1ff;border:1px solid #35537c;border-radius:8px;padding:9px 12px;cursor:pointer;font-weight:650}button:hover{background:#203555}.danger{border-color:#7b4050}.phase{color:#72b7ff}.write{color:#ffb86b}.ask{color:#8be9a4}
+  .metric{display:grid;grid-template-columns:1fr auto;gap:6px 12px;padding:7px 0;border-bottom:1px solid #1b293d}.metric:last-child{border:0}.value{font-variant-numeric:tabular-nums;font-weight:700}.barrow{display:grid;grid-template-columns:28px 1fr 72px;gap:8px;align-items:center;margin:8px 0}.bar{height:11px;background:#111b2a;border-radius:999px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#5ca9ff,#b889ff);min-width:1px}.small{font-size:13px;color:#9cadc9;line-height:1.45}.pipeline{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.step{padding:7px 9px;border-radius:8px;background:#111d2d;border:1px solid #263b59;font-size:12px}.arrow{align-self:center;color:#6684ad}.log{height:158px;overflow:auto;background:#080c12;border-radius:8px;padding:10px;font:12px ui-monospace,monospace;color:#a9bbd5;white-space:pre-wrap}.footer{margin-top:14px;color:#74849c;font-size:12px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main>
+  <div class="top"><div><h1>Select → Carry → Bind → Write → Ask → Select</h1><div class="sub">A self-modifying classical modal-flow machine. The trajectory is state; the slow axis is memory.</div></div><div class="badge">not quantum • engineered mechanism</div></div>
+  <div class="pipeline"><span class="step">SELECT modes</span><span class="arrow">→</span><span class="step">CARRY phase</span><span class="arrow">→</span><span class="step">BIND coherence</span><span class="arrow">→</span><span class="step">WRITE Θ</span><span class="arrow">→</span><span class="step">ASK locally</span><span class="arrow">→</span><span class="step">SELECT again</span></div>
+  <div class="grid">
+    <section class="card">
+      <h2 style="margin-top:0">Causal phase space</h2>
+      <div class="small"><span class="phase">X = Re(aA)</span>, <span class="phase">Y = Im(aA)</span>, <span class="write">Z = ΘBA</span>. Unlike the old Slider2 plot, Z changes the next trajectory.</div>
+      <canvas id="phase" width="900" height="560"></canvas>
+      <div class="controls">
+        <button id="select">SELECT broadband</button>
+        <button id="train0">BIND+WRITE Δφ=0</button>
+        <button id="train90">Δφ=π/2</button>
+        <button id="train180">Δφ=π</button>
+        <button id="freq">frequency mismatch</button>
+        <button id="wipe">wipe fast state</button>
+        <button id="recall">ASK: recall A</button>
+        <button class="danger" id="reset">reset all</button>
+      </div>
+      <div class="small">Carrier match is a temporal address. Phase is a signed write coordinate. Spatial overlap is fixed high in this browser toy; the Python receipt includes the separation control.</div>
+    </section>
+    <aside>
+      <section class="card"><h3 style="margin-top:0">Live state</h3><div id="bars"></div></section>
+      <section class="card" style="margin-top:14px"><h3 style="margin-top:0">Operator</h3><div id="metrics"></div></section>
+      <section class="card" style="margin-top:14px"><h3 style="margin-top:0">Event log</h3><div class="log" id="log"></div></section>
+    </aside>
+  </div>
+  <div class="footer">The browser page is an inspectable low-dimensional version of the Python model. It demonstrates the causal loop by construction; it is not evidence of quantum advantage or spontaneous Navier–Stokes plasticity.</div>
+</main>
+<script>
+const modes=[{name:'A',d:.22,w:4.0},{name:'B',d:.28,w:4.0},{name:'C',d:.14,w:7.0},{name:'D',d:.42,w:9.5}];
+const dt=.01,g=1.0,eta=.18,tauR=.65,tauT=120,clip=.18,overlap=.82;
+let re=[0,0,0,0], im=[0,0,0,0], theta=0, rr=0, ri=0, t=0, history=[];
+let drive=null, write=false, until=0, askMode=false, logs=[];
+function addLog(s){logs.unshift(new Date().toLocaleTimeString()+"  "+s);logs=logs.slice(0,18);document.getElementById('log').textContent=logs.join('\n')}
+function resetFast(){re.fill(0);im.fill(0);rr=ri=0;askMode=false;addLog('fast state wiped; Θ preserved')}
+function resetAll(){resetFast();theta=0;t=0;history=[];drive=null;write=false;addLog('all state reset')}
+function seedBroadband(){re=re.map(()=>Math.random()*1.4-.7);im=im.map(()=>Math.random()*1.4-.7);drive=null;write=false;until=t+7;addLog('SELECT: broadband state injected; watch short-lived modes fall away')}
+function startTrain(phase,mismatch=false){resetFast();let wB=mismatch?12:4;drive={phase,wB};write=true;until=t+12;addLog(`BIND+WRITE: Δφ=${phase.toFixed(2)}, ωB=${wB}`)}
+function recall(){resetFast();re[0]=1;drive=null;write=false;until=t+4;askMode=true;addLog('ASK: cue A injected after fast wipe')}
+function deriv(R,I,forcing){let dr=[0,0,0,0],di=[0,0,0,0];for(let i=0;i<4;i++){dr[i]=-modes[i].d*R[i]-modes[i].w*I[i];di[i]=modes[i].w*R[i]-modes[i].d*I[i]}dr[0]+=g*theta*R[1];di[0]+=g*theta*I[1];dr[1]+=g*theta*R[0];di[1]+=g*theta*I[0];if(forcing){for(let i=0;i<4;i++){dr[i]+=forcing.re[i];di[i]+=forcing.im[i]}}return{dr,di}}
+function step(){let force=null,bind=null;if(drive&&t<until){const pA=4*t,pB=drive.wB*t+drive.phase;bind={ar:Math.cos(pA),ai:Math.sin(pA),br:Math.cos(pB),bi:Math.sin(pB)};force={re:[.12*bind.ar,.12*bind.br,0,0],im:[.12*bind.ai,.12*bind.bi,0,0]}}const k1=deriv(re,im,force),mr=re.map((v,i)=>v+.5*dt*k1.dr[i]),mi=im.map((v,i)=>v+.5*dt*k1.di[i]),k2=deriv(mr,mi,force);for(let i=0;i<4;i++){re[i]+=dt*k2.dr[i];im[i]+=dt*k2.di[i]}theta*=Math.exp(-dt/tauT);if(bind&&write){const cr=bind.br*bind.ar+bind.bi*bind.ai,ci=bind.bi*bind.ar-bind.br*bind.ai,b=Math.exp(-dt/tauR);rr=b*rr+(1-b)*cr;ri=b*ri+(1-b)*ci;theta+=dt*eta*overlap*rr;theta=Math.max(-clip,Math.min(clip,theta))}if(drive&&t>=until){drive=null;write=false;addLog(`write finished: ΘBA=${theta.toFixed(5)}`)}t+=dt;history.push({x:re[0],y:im[0],z:theta});if(history.length>900)history.shift()}
+function power(i){return re[i]*re[i]+im[i]*im[i]}
+function eigTop(){const mean=-(.22+.28)/2,half=(.28-.22)/2;return Math.max(-.14,mean+Math.sqrt(half*half+theta*theta))}
+function drawPhase(){const c=document.getElementById('phase'),ctx=c.getContext('2d'),W=c.width,H=c.height;ctx.fillStyle='#05080d';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#1b2b41';ctx.lineWidth=1;for(let i=1;i<8;i++){ctx.beginPath();ctx.moveTo(i*W/8,0);ctx.lineTo(i*W/8,H);ctx.stroke()}for(let i=1;i<6;i++){ctx.beginPath();ctx.moveTo(0,i*H/6);ctx.lineTo(W,i*H/6);ctx.stroke()}if(history.length<2)return;ctx.beginPath();for(let i=0;i<history.length;i++){let p=history[i],z=p.z/clip,X=W*.5+p.x*W*.19+z*W*.16,Y=H*.52-p.y*H*.28-z*H*.17;if(i===0)ctx.moveTo(X,Y);else ctx.lineTo(X,Y)}ctx.strokeStyle='#ff5b61';ctx.lineWidth=2;ctx.stroke();let p=history.at(-1),z=p.z/clip,X=W*.5+p.x*W*.19+z*W*.16,Y=H*.52-p.y*H*.28-z*H*.17;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(X,Y,4,0,Math.PI*2);ctx.fill();ctx.fillStyle='#8aa0bd';ctx.font='14px system-ui';ctx.fillText('carrier plane ↔ slow structural displacement',18,26)}
+function render(){let max=Math.max(.001,...modes.map((_,i)=>power(i)));document.getElementById('bars').innerHTML=modes.map((m,i)=>`<div class="barrow"><b>${m.name}</b><div class="bar"><div class="fill" style="width:${Math.min(100,100*power(i)/max)}%"></div></div><span class="value">${power(i).toExponential(2)}</span></div>`).join('');let top=eigTop(),life=top<0?-1/top:Infinity,decision='—';if(askMode){decision=power(1)>.012?'B (1 question)':'uncertain (would ask C)'}document.getElementById('metrics').innerHTML=`<div class="metric"><span>Θ A↔B</span><span class="value write">${theta.toFixed(6)}</span></div><div class="metric"><span>dominant Re λ</span><span class="value">${top.toFixed(5)}</span></div><div class="metric"><span>dominant lifetime</span><span class="value">${isFinite(life)?life.toFixed(2):'unstable'}</span></div><div class="metric"><span>ASK result</span><span class="value ask">${decision}</span></div>`;drawPhase()}
+function loop(){for(let i=0;i<4;i++)step();render();requestAnimationFrame(loop)}
+document.getElementById('select').onclick=seedBroadband;document.getElementById('train0').onclick=()=>startTrain(0,false);document.getElementById('train90').onclick=()=>startTrain(Math.PI/2,false);document.getElementById('train180').onclick=()=>startTrain(Math.PI,false);document.getElementById('freq').onclick=()=>startTrain(0,true);document.getElementById('wipe').onclick=resetFast;document.getElementById('recall').onclick=recall;document.getElementById('reset').onclick=resetAll;addLog('machine ready');loop();
+</script></body></html>
