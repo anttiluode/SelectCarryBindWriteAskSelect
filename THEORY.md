@@ -1,95 +1,145 @@
-# Theory note: a self-modifying modal flow
+# Theory note: modal flow with a physical write substrate
 
-The useful object in this repo is not a quantum analogy. It is a two-timescale operator system with wave-native addressing.
+The useful object in this repo is not a quantum analogy. It is a two-timescale operator system with wave-native addressing. The current default now separates the **modal organism** from the **physical write substrate**.
 
-## Fast state
+## Fast modal state
 
 For localized modes `phi_i(x)`,
 
 ```math
-\psi(x,t)=\sum_i a_i(t)\phi_i(x).
-```
-
-The modal coefficients obey
-
-```math
-\dot a = G(\Theta)a+u(t),
+\psi(x,t)=\sum_i a_i(t)\phi_i(x),
 ```
 
 with
 
 ```math
+\dot a=G(\Theta)a+u(t),
+\qquad
 G(\Theta)=\operatorname{diag}(-d_i+i\omega_i)+g\Theta.
 ```
 
-The real parts of the eigenvalues of `G` define forgetting / growth times. This is the Sigh side of the construction.
+The real parts of the eigenvalues of `G` define forgetting/growth times. This is the Sigh side: structure assigns persistence.
 
 ## Carrier address
 
-A driven channel is
-
-```math
-z_i(t)=A_i e^{i(\omega_i t+\phi_i)}.
-```
-
-The pair product is
-
-```math
-z_jz_i^*=A_jA_i e^{i[(\omega_j-\omega_i)t+(\phi_j-\phi_i)]}.
-```
-
-A slow detector integrates this product. Carrier mismatch is rejected by time averaging; matched carriers survive.
-
-## Spatial address
-
-The basis functions use localized Gaussian envelopes. Their envelope overlap is
-
-```math
-O_{ji}=\int |\phi_j(x)|\,|\phi_i(x)|\,dx.
-```
-
-A temporally coherent pair that never occupies overlapping spatial support therefore produces only a weak write.
-
-This gives an address with multiple coordinates:
+A physical training channel is specified by several coordinates:
 
 ```text
-q          spatial location
-k          spatial carrier / wavevector
-omega      temporal carrier
-Delta phi  signed phase relation
+q          spatial center / WHERE
+k          spatial carrier / wavevector family
+omega      temporal carrier / WHICH
+Delta phi  relative phase / signed interaction coordinate
 ```
 
-## Bind and write
-
-The low-pass coherence state is
+The old reduced writer made this transparent with
 
 ```math
-\tau_r \dot r_{ji}=-r_{ji}+z_jz_i^*.
+z_jz_i^*=A_jA_i e^{i[(\omega_j-\omega_i)t+(\phi_j-\phi_i)]},
 ```
 
-The slow route is
+then explicitly low-passed the product. That model is retained as `--writer coherence`.
+
+The default path now asks whether a nonlinear field can implement the same selection physically.
+
+## Navier–Stokes BIND
+
+The write substrate is a periodic 2-D incompressible vorticity field:
 
 ```math
-\tau_\Theta \dot\Theta_{ji}
-=-\Theta_{ji}
-+\eta O_{ji}\Re(r_{ji}).
+\partial_t\omega+u\cdot\nabla\omega
+=\nu\Delta\omega+f,
 ```
-
-For matched carriers:
 
 ```math
-\Re(r_{ji})\propto\cos(\Delta\phi).
+u=(\partial_y\psi,-\partial_x\psi),
+\qquad
+-\Delta\psi=\omega.
 ```
 
-So relative phase supplies a signed plasticity coordinate in the real write channel.
+Carrier A and carrier B enter as localized, oscillatory, high-spatial-frequency forcing packets. The solver does not receive a coherence product. The only nonlinear mixer is the convective term `u.grad(omega)`.
 
-This is intentionally an engineered constitutive law. A stronger physical substrate would derive the slow write from an actual nonlinear medium rather than stipulate this coupling.
+The forcing has the schematic form
 
-## Why symmetric writing changes selection
+```math
+f_i(x,t)=E_i(x;q_i)\cos(K_i\cdot x)\cos(\omega_i t+\phi_i).
+```
 
-A single directed triangular route can change transfer without changing eigenvalues. For the main demonstration we therefore write both `Theta_ji` and `Theta_ij` from the same pair event.
+Because the dynamics are quadratic, pair cross-terms can generate difference-frequency / difference-wavevector content. Frequency mismatch makes those contributions alternate in sign through time; spatial separation suppresses local cross-terms; relative phase can reverse the collision contribution.
 
-The A/B block is approximately
+## Four-world isolation
+
+A changed final fluid is not sufficient evidence for binding. A alone and B alone can each alter the field, and every world diffuses with time.
+
+Therefore all worlds start identically and advance for exactly the same number of steps:
+
+```text
+W0   background / no carriers
+WA   A only
+WB   B only
+WAB  A + B
+```
+
+The pair-specific physical write is
+
+```math
+\Delta\Omega_{AB}
+=P_{\rm slow}
+[\omega_{AB}-\omega_A-\omega_B+\omega_0].
+```
+
+This is an inclusion/exclusion interaction residual in the **state itself**, before a nonlinear detector is applied.
+
+After the carriers are switched off, every world receives a forcing-free washout. The current deterministic setting leaves the matched collision with
+
+```text
+||fast residual|| / ||slow residual|| = 0.0895
+```
+
+after washout, so the stored quantity used by the adapter is genuinely dominated by the low-frequency band.
+
+## From distributed slow field to modal operator
+
+There is still an interface problem. `DeltaOmega_AB(x,y)` is a distributed physical state, while the assembled organism currently expects a finite route `Theta_BA`.
+
+The present solution is a fixed transducer.
+
+One matched phase-0 run defines a reference physical port `R_AB(x,y)`. Every subsequent collision field is measured by
+
+```math
+c_{AB}
+=\frac{\langle R_{AB},\Delta\Omega\rangle}
+       {\langle R_{AB},R_{AB}\rangle}.
+```
+
+The modal route is then expressed in chosen coupling units:
+
+```math
+\Theta_{BA}=s\,c_{AB}.
+```
+
+For the main symmetric demonstration the same value is installed in `Theta_AB` so the structural event changes the eigenspectrum rather than only creating a triangular feed-forward edge.
+
+This projection is **calibration**, not a second learning rule: the same fixed reference is used for phase, frequency and spatial controls. It chooses what finite physical deformation counts as the A<->B operator port, but it does not choose the sign or selectivity of each new collision.
+
+## The measured address structure
+
+With the current deterministic numerical substrate:
+
+```text
+matched phase 0       projection  +1.0000
+phase pi/2                        +0.0382
+phase pi                          -1.0042
+frequency mismatch               -0.00346
+spatial separation               +0.01473
+```
+
+and the raw matched slow-field norm is about `112.7x` the frequency-mismatch control and `32.5x` the spatial-separation control.
+
+This is the main new fact relative to the previous version: **the nonlinear fluid itself now supplies most of the selection that the explicit coherence rule used to impose.**
+
+## Why WRITE changes SELECT
+
+The A/B modal block is approximately
 
 ```math
 \begin{pmatrix}
@@ -98,42 +148,52 @@ g\theta & -d_B+i\omega
 \end{pmatrix}.
 ```
 
-Its real eigenvalues split around the original decay rates. One coupled combination becomes more persistent while the orthogonal combination becomes less persistent.
+A nonzero physical write splits the decay rates of the coupled combinations. In the default receipt the longest lifetime changes from about `7.14` to `14.81`.
 
-This closes the Sigh / InformationFlow loop:
+So the loop is now
 
 ```text
-coherent co-occurrence
-      -> structural coupling
-      -> new eigensystem
-      -> new persistence hierarchy
-      -> different future state
+carrier event
+    -> nonlinear physical collision
+    -> slow distributed backreaction
+    -> fixed operator port
+    -> changed eigensystem
+    -> changed persistence hierarchy
+    -> changed future bounded observation
 ```
 
 ## Bounded observation
 
-A full modal-state readout would make ASK meaningless. The machine instead exposes local projections of the reconstructed field and stops when a local response clears a confidence threshold or the question budget is exhausted.
+A full state tomography would make ASK trivial. The organism instead exposes local probes and stops when one clears a threshold or the question budget is exhausted.
 
-## Relation to wavebits
+The important architectural point is that ASK did not change when WRITE became physical. This is the benefit of treating the system as composable causal roles rather than one monolithic field metaphor.
 
-Wavebits use coherent classical carrier signals and time-averaged products to recover quantum-state structure. This repo borrows the signal-processing lesson, not the quantum claim:
+## Relation to Wavebits
+
+Wavebits supply the signal-processing clue that coherent carrier relations can make selected products survive temporal averaging while mismatched products cancel.
+
+This repo uses that clue differently. It does not reconstruct an exponentially large quantum state. It injects carrier-coded activity into a nonlinear classical medium and asks whether the resulting slow physical state can alter future information flow.
+
+## Relation to the failed fluid-synapse Gate 6
+
+The earlier `-mp-ri/Claude/gate6_fluid_synapse.py` found substantial nonlinear low-frequency change but failed the functional isolation test: its separated control routed recall more strongly than the collision-specific term.
+
+That failure suggested the missing variable was **addressing**, not more nonlinearity.
+
+The current substrate therefore keeps the four-world attacker but gives the packets coherent spatial/frequency/phase addresses before they enter the same kind of nonlinear fluid dynamics.
+
+## Remaining physical gap
+
+The strongest next replacement is now very specific.
+
+Currently:
 
 ```text
-orthogonal / mismatched carriers -> unwanted products average away
-matched carriers                 -> selected product survives
+distributed Navier-Stokes slow field
+          -> fixed calibrated modal port
+          -> Theta
 ```
 
-Here the surviving product is not used to reconstruct a quantum state. It is allowed to alter the slow operator.
+A more fully field-native machine would remove that transducer and let the slow physical field itself be the routing operator for the next fast carriers.
 
-## Relation to Navier--Stokes
-
-The analogy to fluid mechanics remains a design guide:
-
-```text
-carry       ~ advection / coherent transport
-bind        ~ quadratic interaction
-write       ~ slow backreaction / changed routing field
-ask         ~ bounded local projection
-```
-
-But the present model is not a Navier--Stokes discretization. `InformationFlow` and `-mp-ri` contain the more explicitly fluid substrates. This repo is the assembly layer where the causal roles are separated cleanly enough to swap substrates without losing the machine.
+That is a narrower and better problem than inventing another external learning rule.
